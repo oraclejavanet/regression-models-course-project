@@ -2849,6 +2849,45 @@ div.tocify {
 <div id="synopsis" class="section level2">
 <h2>Synopsis</h2>
 </div>
+<div id="environment-setup" class="section level2">
+<h2>Environment Setup</h2>
+<p>Load packages used in this analysis.</p>
+<pre class="r"><code># load libraries
+if (!require(&quot;ggplot2&quot;)) {
+    install.packages(&quot;ggplot2&quot;)
+    library(&quot;ggplot2&quot;)
+}</code></pre>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<pre><code>## Registered S3 methods overwritten by 'ggplot2':
+##   method         from 
+##   [.quosures     rlang
+##   c.quosures     rlang
+##   print.quosures rlang</code></pre>
+<pre class="r"><code>if (!require(&quot;dplyr&quot;)) {
+    install.packages(&quot;dplyr&quot;)
+    library(&quot;dplyr&quot;)
+}</code></pre>
+<pre><code>## Loading required package: dplyr</code></pre>
+<pre><code>## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
+## logical.return = TRUE, : there is no package called 'dplyr'</code></pre>
+<pre><code>## Installing package into '/Users/jhunter/repos/coursera/github-assignments/regression-models-course-project/packrat/lib/x86_64-apple-darwin15.6.0/3.6.0'
+## (as 'lib' is unspecified)</code></pre>
+<pre><code>## also installing the dependencies 'purrr', 'tidyselect'</code></pre>
+<pre><code>## 
+## The downloaded binary packages are in
+##  /var/folders/2z/z7087ckn7tg2y49dvqr_l4j40000gn/T//RtmpPGYAoH/downloaded_packages</code></pre>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following object is masked from 'package:ggplot2':
+## 
+##     vars</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+</div>
 <div id="load-data" class="section level2">
 <h2>Load Data</h2>
 </div>
