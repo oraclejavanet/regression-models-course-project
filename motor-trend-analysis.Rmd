@@ -35,4 +35,25 @@ Peer-graded Assignment
 ## Synopsis
 
 
+## Load Data
+
+
+
+## Exploratory Data Analysis
+
+
+## Linear Models
+
+
+
+
+## Analysis of Residuals
+
+
+
+
+## Conclusion
+
+
+
 
