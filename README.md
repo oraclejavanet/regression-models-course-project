@@ -10,7 +10,7 @@ Peer-graded Assignment: Course Project
 
 **Analysis report available on RPubs**
 
-* <a href="http://rpubs.com/OracleJavaNet/498065">Motor Trend Data Analysis</a>
+* <a href="http://rpubs.com/OracleJavaNet/498067">Motor Trend Data Analysis</a>
 
 **Analysis report available on GitHub**
 
