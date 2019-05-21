@@ -14,7 +14,7 @@ Peer-graded Assignment: Course Project
 
 **Analysis report available on GitHub**
 
-* <a href="http://htmlpreview.github.io/?https://github.com/oraclejavanet/reproducible-research-course-project-2/blob/master/storm-data-analysis.html" target="_blank">Motor Trend Data Analysis</a>
+* <a href="http://htmlpreview.github.io/?https://github.com/oraclejavanet/regression-models-course-project/blob/master/motor-trend-data-analysis.html" target="_blank">Motor Trend Data Analysis</a>
 
 ## Instructions
 
