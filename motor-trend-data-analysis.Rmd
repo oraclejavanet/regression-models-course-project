@@ -1,0 +1,146 @@
+---
+title: "Motor Trend Data Analysis"
+author: "Jeffrey M. Hunter"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: cosmo
+    keep_md: no
+    df_print: paged
+  pdf_document:
+    toc: yes
+    df_print: kable
+    number_sections: false
+    fig_caption: yes
+    highlight: tango
+    dev: pdf
+  word_document:
+    toc: yes
+    df_print: paged
+    keep_md: no
+---
+
+## Course Project
+
+**Regression Models Course Project**
+
+Peer-graded Assignment
+
+* This course project is available on GitHub
+
+    <a href="https://github.com/oraclejavanet/regression-models-course-project" target="_top">Motor Trend Data Analysis</a>
+
+## Synopsis
+
+*Pending*
+
+## Environment Setup
+
+```{r setup, include = FALSE}
+# set knitr options
+knitr::opts_chunk$set(echo = TRUE, fig.path='figures/')
+
+# clear global workspace (including hidden objects) for this session
+rm(list = ls(all.names = TRUE))
+
+# free up memory and display statistics on free memory
+gc()
+
+# disable scientific notation for numbers
+options(scipen = 1)
+```
+
+Load packages used in this analysis.
+
+```{r load-packages, echo = TRUE}
+if (!require(ggplot2)) {
+    install.packages("ggplot2")
+    library(ggplot2)
+}
+if (!require("dplyr")) {
+    install.packages("dplyr")
+    library("dplyr")
+}
+```
+
+Display session information.
+
+```{r display-session-info, echo = TRUE}
+sessionInfo()
+```
+
+## Load Data
+
+Load and prepare the mtcars dataset. Convert categorical variables to factors.
+
+```{r load-data, echo = TRUE}
+library(datasets)
+data(mtcars)
+```
+
+## Basic Data Summary
+
+After loading the mtcars dataset, provide a basic summary of the data.
+
+```{r basic-data-summary, echo = TRUE}
+str(mtcars)
+summary(mtcars)
+head(mtcars)
+dim(mtcars)
+
+# tabulate delivery method and dosage level values
+#table(ToothGrowth$supp, ToothGrowth$dose)
+
+# summary of tooth length data grouped by delivery method and dosage level
+#by(data = ToothGrowth$len, INDICES = list(ToothGrowth$supp, ToothGrowth$dose), summary)
+```
+
+## Exploratory Data Analysis
+
+Perform some basic exploratory data analyses of the data. The analyses will
+explore the following relations:
+
+1. Relation 1
+1. Relation 2
+
+### Relation 1
+
+```{r relation-1, echo = TRUE}
+```
+
+**Observation**
+
+*Pending*
+
+### Relation 2
+
+```{r relation-2, echo = TRUE}
+```
+
+**Observation**
+
+*Pending*
+
+
+
+## Linear Models
+
+
+*Pending*
+
+
+## Analysis of Residuals
+
+
+*Pending*
+
+
+## Conclusion
+
+
+*Pending*
+
+
+

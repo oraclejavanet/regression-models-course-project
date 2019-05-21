@@ -1,16 +1,20 @@
-# Regression Models
+# Regression Models Course Project
 
 **Jeffrey M. Hunter**
 
-May 20, 2019
+May 21, 2019
 
-## Course Project
+## Project
 
-Peer-graded Assignment
+Peer-graded Assignment: Course Project
 
-The analysis report for this project is available on RPubs:
+**Analysis report available on RPubs**
 
-<a href="http://rpubs.com/OracleJavaNet/497815">Motor Trend Analysis</a>
+* <a href="http://rpubs.com/OracleJavaNet/498065">Motor Trend Data Analysis</a>
+
+**Analysis report available on GitHub**
+
+* <a href="http://htmlpreview.github.io/?https://github.com/oraclejavanet/reproducible-research-course-project-2/blob/master/storm-data-analysis.html" target="_blank">Motor Trend Data Analysis</a>
 
 ## Instructions
 
