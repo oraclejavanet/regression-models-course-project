@@ -34,7 +34,31 @@ Peer-graded Assignment
 
 ## Synopsis
 
-This analysis is being performed for 
+This analysis is being performed for Motor Trend, a popular American automobile
+magazine, to evaluate the relationship between transmission type (manual or 
+automatic) and miles per gallon (MPG) in automobiles. The analysis extends
+beyond transmission design to also include other possible variables such as
+number of cylinders, gross horsepower and displacement that explain variance in
+MPG.
+
+Motor Trend is particularly interested in the following two questions:
+
+* Is an automatic or manual transmission better for MPG
+* Quantify the MPG difference between automatic and manual transmissions
+
+
+=============
+
+
+
+In this project we take the mtcars data set and write up an analysis to answer their question using linear regression models and exploratory data analyses.
+
+using the `mtcars` dataset.
+
+In this project, we will analyze the mtcars dataset from the 1974 Motor Trend US magazine to answer the following questions:
+ 
+ 
+ 
 
 ## Environment Setup
 
