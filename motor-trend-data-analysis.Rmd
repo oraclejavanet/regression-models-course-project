@@ -34,13 +34,48 @@ Peer-graded Assignment
 
 ## Synopsis
 
-*Pending*
+This analysis is being performed for Motor Trend, a popular American automobile
+magazine, to evaluate the relationship between transmission type (manual or 
+automatic) and fuel consumption in miles per gallon (MPG) in automobiles. The
+analysis extends beyond transmission type to also include other possible
+variables such as number of cylinders, displacement and gross horsepower that
+explain variance in fuel consumption (MPG).
+
+As part of this analysis, Motor Trend is particularly interested in the
+following two questions:
+
+* Is an automatic or manual transmission better for MPG
+* Quantify the MPG difference between automatic and manual transmissions
+
+The analysis will be conducted using using exploratory data analyses and
+linear regression models using the `mtcars` dataset.
+
+## Data Description
+
+The mtcars dataset is comprised of data that was was extracted from the
+1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of
+automobile design and performance for 32 automobiles (1973-74 models).
+
+The mtcars dataset is a data frame with 32 observations on 11 (numeric)
+variables:
+
+* `mpg` Miles/(US) gallon
+* `cyl` Number of cylinders
+* `disp` Displacement (cu.in.)
+* `hp` Gross horsepower
+* `drat` Rear axle ratio
+* `wt` Weight (1000 lbs)
+* `qsec` 1/4 mile time
+* `vs` Engine (0 = V-shaped, 1 = straight)
+* `am` Transmission (0 = automatic, 1 = manual)
+* `gear` Number of forward gears
+* `carb` Number of carburetors
 
 ## Environment Setup
 
 ```{r setup, include = FALSE}
 # set knitr options
-knitr::opts_chunk$set(echo = TRUE, fig.path='figures/')
+knitr::opts_chunk$set(echo = TRUE, fig.path = 'figures/')
 
 # clear global workspace (including hidden objects) for this session
 rm(list = ls(all.names = TRUE))
@@ -55,6 +90,14 @@ options(scipen = 1)
 Load packages used in this analysis.
 
 ```{r load-packages, echo = TRUE}
+if (!require(knitr)) {
+    install.packages("knitr")
+    library(knitr)
+}
+if (!require(kableExtra)) {
+    install.packages("kableExtra")
+    library(kableExtra)
+}
 if (!require(ggplot2)) {
     install.packages("ggplot2")
     library(ggplot2)
@@ -73,7 +116,7 @@ sessionInfo()
 
 ## Load Data
 
-Load and prepare the mtcars dataset. Convert categorical variables to factors.
+Load the mtcars dataset.
 
 ```{r load-data, echo = TRUE}
 library(datasets)
@@ -82,19 +125,36 @@ data(mtcars)
 
 ## Basic Data Summary
 
-After loading the mtcars dataset, provide a basic summary of the data.
+The mtcars dataset includes 1 target variable (mpg) and 10 independent control
+variables with 32 observations.
+
+Provide a basic summary of the data.
 
 ```{r basic-data-summary, echo = TRUE}
+# target variable
+kable(summary(mtcars[1]), row.names = FALSE, align = c("l"), caption = "Target Variable (MPG)") %>% kable_styling(position = "center")
+
+# independent control variables
+kable(summary(mtcars[2:6]), row.names = FALSE, align = c(rep("l", 5)), caption = "Control Variables") %>% kable_styling(position = "left")
+kable(summary(mtcars[7:11]), row.names = FALSE, align = rep('l', 5), caption = "Control Variables (cont)") %>% kable_styling(position = "left")
+```
+
+## Prepare the Data
+
+Prepare the dataset by converting all necessary categorical variables that will
+be used in this analysis to factors.
+
+```{r prepare-data, echo = TRUE}
+# convert categorical variables to factors
+mtcars$am.label <- factor(mtcars$am, labels = c("Automatic", "Manual"))
+mtcars$cyl <- factor(mtcars$cyl)
+mtcars$disp <- factor(mtcars$disp)
+mtcars$hp <- factor(mtcars$hp)
+mtcars$gear <- factor(mtcars$gear)
+mtcars$carb <- factor(mtcars$carb)
+
+# display the internal structure of variables
 str(mtcars)
-summary(mtcars)
-head(mtcars)
-dim(mtcars)
-
-# tabulate delivery method and dosage level values
-#table(ToothGrowth$supp, ToothGrowth$dose)
-
-# summary of tooth length data grouped by delivery method and dosage level
-#by(data = ToothGrowth$len, INDICES = list(ToothGrowth$supp, ToothGrowth$dose), summary)
 ```
 
 ## Exploratory Data Analysis
@@ -108,6 +168,8 @@ explore the following relations:
 ### Relation 1
 
 ```{r relation-1, echo = TRUE}
+# summary of fuel consumption data grouped by transmission type (0 = automatic, 1 = manual)
+by(data = mtcars$mpg, INDICES = list(mtcars$am), summary)
 ```
 
 **Observation**
@@ -142,5 +204,8 @@ explore the following relations:
 
 *Pending*
 
+## Appendix
+
+### Figure 1
 
 
