@@ -2568,6 +2568,15 @@ window.onload = function() {
   PagedTableDoc.initAll();
 };
 </script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -2832,7 +2841,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Motor Trend Data Analysis</h1>
 <h4 class="author">Jeffrey M. Hunter</h4>
-<h4 class="date">24 May, 2019</h4>
+<h4 class="date">25 May, 2019</h4>
 
 </div>
 
@@ -2848,20 +2857,45 @@ div.tocify {
 </div>
 <div id="synopsis" class="section level2">
 <h2>Synopsis</h2>
-<p>This analysis is being performed for Motor Trend, a popular American automobile magazine, to evaluate the relationship between transmission type (manual or automatic) and miles per gallon (MPG) in automobiles. The analysis extends beyond transmission design to also include other possible variables such as number of cylinders, gross horsepower and displacement that explain variance in MPG.</p>
-<p>Motor Trend is particularly interested in the following two questions:</p>
+<p>This analysis is being performed for Motor Trend, a popular American automobile magazine, to evaluate the relationship between transmission type (manual or automatic) and fuel consumption in miles per gallon (MPG) in automobiles. The analysis extends beyond transmission type to also include other possible variables such as number of cylinders, displacement and gross horsepower that explain variance in fuel consumption (MPG).</p>
+<p>As part of this analysis, Motor Trend is particularly interested in the following two questions:</p>
 <ul>
 <li>Is an automatic or manual transmission better for MPG</li>
 <li>Quantify the MPG difference between automatic and manual transmissions</li>
 </ul>
-<p>=============</p>
-<p>In this project we take the mtcars data set and write up an analysis to answer their question using linear regression models and exploratory data analyses.</p>
-<p>using the <code>mtcars</code> dataset.</p>
-<p>In this project, we will analyze the mtcars dataset from the 1974 Motor Trend US magazine to answer the following questions:</p>
+<p>The analysis will be conducted using using exploratory data analyses and linear regression models using the <code>mtcars</code> dataset.</p>
+</div>
+<div id="data-description" class="section level2">
+<h2>Data Description</h2>
+<p>The mtcars dataset is comprised of data that was was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models).</p>
+<p>The mtcars dataset is a data frame with 32 observations on 11 (numeric) variables:</p>
+<ul>
+<li><code>mpg</code> Miles/(US) gallon</li>
+<li><code>cyl</code> Number of cylinders</li>
+<li><code>disp</code> Displacement (cu.in.)</li>
+<li><code>hp</code> Gross horsepower</li>
+<li><code>drat</code> Rear axle ratio</li>
+<li><code>wt</code> Weight (1000 lbs)</li>
+<li><code>qsec</code> 1/4 mile time</li>
+<li><code>vs</code> Engine (0 = V-shaped, 1 = straight)</li>
+<li><code>am</code> Transmission (0 = automatic, 1 = manual)</li>
+<li><code>gear</code> Number of forward gears</li>
+<li><code>carb</code> Number of carburetors</li>
+</ul>
 </div>
 <div id="environment-setup" class="section level2">
 <h2>Environment Setup</h2>
 <p>Load packages used in this analysis.</p>
+<pre class="r"><code>if (!require(knitr)) {
+    install.packages(&quot;knitr&quot;)
+    library(knitr)
+}</code></pre>
+<pre><code>## Loading required package: knitr</code></pre>
+<pre class="r"><code>if (!require(kableExtra)) {
+    install.packages(&quot;kableExtra&quot;)
+    library(kableExtra)
+}</code></pre>
+<pre><code>## Loading required package: kableExtra</code></pre>
 <pre class="r"><code>if (!require(ggplot2)) {
     install.packages(&quot;ggplot2&quot;)
     library(ggplot2)
@@ -2879,6 +2913,9 @@ div.tocify {
 <pre><code>## Loading required package: dplyr</code></pre>
 <pre><code>## 
 ## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following object is masked from 'package:kableExtra':
+## 
+##     group_rows</code></pre>
 <pre><code>## The following objects are masked from 'package:stats':
 ## 
 ##     filter, lag</code></pre>
@@ -2902,75 +2939,365 @@ div.tocify {
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] dplyr_0.8.1   ggplot2_3.1.1
+## [1] dplyr_0.8.1      ggplot2_3.1.1    kableExtra_1.1.0 knitr_1.23      
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.1       knitr_1.23       magrittr_1.5     tidyselect_0.2.5
-##  [5] munsell_0.5.0    colorspace_1.4-1 R6_2.4.0         rlang_0.3.4     
-##  [9] stringr_1.4.0    plyr_1.8.4       tools_3.6.0      grid_3.6.0      
-## [13] packrat_0.5.0    gtable_0.3.0     xfun_0.7         withr_2.1.2     
-## [17] htmltools_0.3.6  assertthat_0.2.1 yaml_2.2.0       lazyeval_0.2.2  
-## [21] digest_0.6.18    tibble_2.1.1     crayon_1.3.4     purrr_0.3.2     
-## [25] glue_1.3.1       evaluate_0.13    rmarkdown_1.12   stringi_1.4.3   
-## [29] compiler_3.6.0   pillar_1.4.0     scales_1.0.0     pkgconfig_2.0.2</code></pre>
+##  [1] Rcpp_1.0.1        pillar_1.4.0      compiler_3.6.0   
+##  [4] plyr_1.8.4        tools_3.6.0       digest_0.6.18    
+##  [7] packrat_0.5.0     evaluate_0.13     tibble_2.1.1     
+## [10] gtable_0.3.0      viridisLite_0.3.0 pkgconfig_2.0.2  
+## [13] rlang_0.3.4       rstudioapi_0.10   yaml_2.2.0       
+## [16] xfun_0.7          withr_2.1.2       httr_1.4.0       
+## [19] stringr_1.4.0     xml2_1.2.0        hms_0.4.2        
+## [22] tidyselect_0.2.5  webshot_0.5.1     grid_3.6.0       
+## [25] glue_1.3.1        R6_2.4.0          rmarkdown_1.12   
+## [28] purrr_0.3.2       readr_1.3.1       magrittr_1.5     
+## [31] scales_1.0.0      htmltools_0.3.6   assertthat_0.2.1 
+## [34] rvest_0.3.4       colorspace_1.4-1  stringi_1.4.3    
+## [37] lazyeval_0.2.2    munsell_0.5.0     crayon_1.3.4</code></pre>
 </div>
 <div id="load-data" class="section level2">
 <h2>Load Data</h2>
-<p>Load and prepare the mtcars dataset. Convert categorical variables to factors.</p>
+<p>Load the mtcars dataset.</p>
 <pre class="r"><code>library(datasets)
 data(mtcars)</code></pre>
 </div>
 <div id="basic-data-summary" class="section level2">
 <h2>Basic Data Summary</h2>
-<p>After loading the mtcars dataset, provide a basic summary of the data.</p>
-<pre class="r"><code>str(mtcars)</code></pre>
-<pre><code>## 'data.frame':    32 obs. of  11 variables:
-##  $ mpg : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
-##  $ cyl : num  6 6 4 6 8 6 8 4 4 6 ...
-##  $ disp: num  160 160 108 258 360 ...
-##  $ hp  : num  110 110 93 110 175 105 245 62 95 123 ...
-##  $ drat: num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
-##  $ wt  : num  2.62 2.88 2.32 3.21 3.44 ...
-##  $ qsec: num  16.5 17 18.6 19.4 17 ...
-##  $ vs  : num  0 0 1 1 0 1 0 1 1 1 ...
-##  $ am  : num  1 1 1 0 0 0 0 0 0 0 ...
-##  $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
-##  $ carb: num  4 4 1 1 2 1 4 2 2 4 ...</code></pre>
-<pre class="r"><code>summary(mtcars)</code></pre>
-<pre><code>##       mpg             cyl             disp             hp       
-##  Min.   :10.40   Min.   :4.000   Min.   : 71.1   Min.   : 52.0  
-##  1st Qu.:15.43   1st Qu.:4.000   1st Qu.:120.8   1st Qu.: 96.5  
-##  Median :19.20   Median :6.000   Median :196.3   Median :123.0  
-##  Mean   :20.09   Mean   :6.188   Mean   :230.7   Mean   :146.7  
-##  3rd Qu.:22.80   3rd Qu.:8.000   3rd Qu.:326.0   3rd Qu.:180.0  
-##  Max.   :33.90   Max.   :8.000   Max.   :472.0   Max.   :335.0  
-##       drat             wt             qsec             vs        
-##  Min.   :2.760   Min.   :1.513   Min.   :14.50   Min.   :0.0000  
-##  1st Qu.:3.080   1st Qu.:2.581   1st Qu.:16.89   1st Qu.:0.0000  
-##  Median :3.695   Median :3.325   Median :17.71   Median :0.0000  
-##  Mean   :3.597   Mean   :3.217   Mean   :17.85   Mean   :0.4375  
-##  3rd Qu.:3.920   3rd Qu.:3.610   3rd Qu.:18.90   3rd Qu.:1.0000  
-##  Max.   :4.930   Max.   :5.424   Max.   :22.90   Max.   :1.0000  
-##        am              gear            carb      
-##  Min.   :0.0000   Min.   :3.000   Min.   :1.000  
-##  1st Qu.:0.0000   1st Qu.:3.000   1st Qu.:2.000  
-##  Median :0.0000   Median :4.000   Median :2.000  
-##  Mean   :0.4062   Mean   :3.688   Mean   :2.812  
-##  3rd Qu.:1.0000   3rd Qu.:4.000   3rd Qu.:4.000  
-##  Max.   :1.0000   Max.   :5.000   Max.   :8.000</code></pre>
-<pre class="r"><code>head(mtcars)</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mpg"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cyl"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["disp"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["drat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["wt"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["qsec"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["vs"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["am"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["gear"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["carb"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"21.0","2":"6","3":"160","4":"110","5":"3.90","6":"2.620","7":"16.46","8":"0","9":"1","10":"4","11":"4","_rn_":"Mazda RX4"},{"1":"21.0","2":"6","3":"160","4":"110","5":"3.90","6":"2.875","7":"17.02","8":"0","9":"1","10":"4","11":"4","_rn_":"Mazda RX4 Wag"},{"1":"22.8","2":"4","3":"108","4":"93","5":"3.85","6":"2.320","7":"18.61","8":"1","9":"1","10":"4","11":"1","_rn_":"Datsun 710"},{"1":"21.4","2":"6","3":"258","4":"110","5":"3.08","6":"3.215","7":"19.44","8":"1","9":"0","10":"3","11":"1","_rn_":"Hornet 4 Drive"},{"1":"18.7","2":"8","3":"360","4":"175","5":"3.15","6":"3.440","7":"17.02","8":"0","9":"0","10":"3","11":"2","_rn_":"Hornet Sportabout"},{"1":"18.1","2":"6","3":"225","4":"105","5":"2.76","6":"3.460","7":"20.22","8":"1","9":"0","10":"3","11":"1","_rn_":"Valiant"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
+<p>The mtcars dataset includes 1 target variable (mpg) and 10 independent control variables with 32 observations.</p>
+<p>Provide a basic summary of the data.</p>
+<pre class="r"><code># target variable
+kable(summary(mtcars[1]), row.names = FALSE, align = c(&quot;l&quot;), caption = &quot;Target Variable (MPG)&quot;) %&gt;% kable_styling(position = &quot;center&quot;)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Target Variable (MPG)
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+mpg
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Min. :10.40
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1st Qu.:15.43
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Median :19.20
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mean :20.09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3rd Qu.:22.80
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Max. :33.90
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># independent control variables
+kable(summary(mtcars[2:6]), row.names = FALSE, align = c(rep(&quot;l&quot;, 5)), caption = &quot;Control Variables&quot;) %&gt;% kable_styling(position = &quot;left&quot;)</code></pre>
+<table class="table" style>
+<caption>
+Control Variables
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+cyl
+</th>
+<th style="text-align:left;">
+disp
+</th>
+<th style="text-align:left;">
+hp
+</th>
+<th style="text-align:left;">
+drat
+</th>
+<th style="text-align:left;">
+wt
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Min. :4.000
+</td>
+<td style="text-align:left;">
+Min. : 71.1
+</td>
+<td style="text-align:left;">
+Min. : 52.0
+</td>
+<td style="text-align:left;">
+Min. :2.760
+</td>
+<td style="text-align:left;">
+Min. :1.513
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1st Qu.:4.000
+</td>
+<td style="text-align:left;">
+1st Qu.:120.8
+</td>
+<td style="text-align:left;">
+1st Qu.: 96.5
+</td>
+<td style="text-align:left;">
+1st Qu.:3.080
+</td>
+<td style="text-align:left;">
+1st Qu.:2.581
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Median :6.000
+</td>
+<td style="text-align:left;">
+Median :196.3
+</td>
+<td style="text-align:left;">
+Median :123.0
+</td>
+<td style="text-align:left;">
+Median :3.695
+</td>
+<td style="text-align:left;">
+Median :3.325
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mean :6.188
+</td>
+<td style="text-align:left;">
+Mean :230.7
+</td>
+<td style="text-align:left;">
+Mean :146.7
+</td>
+<td style="text-align:left;">
+Mean :3.597
+</td>
+<td style="text-align:left;">
+Mean :3.217
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3rd Qu.:8.000
+</td>
+<td style="text-align:left;">
+3rd Qu.:326.0
+</td>
+<td style="text-align:left;">
+3rd Qu.:180.0
+</td>
+<td style="text-align:left;">
+3rd Qu.:3.920
+</td>
+<td style="text-align:left;">
+3rd Qu.:3.610
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Max. :8.000
+</td>
+<td style="text-align:left;">
+Max. :472.0
+</td>
+<td style="text-align:left;">
+Max. :335.0
+</td>
+<td style="text-align:left;">
+Max. :4.930
+</td>
+<td style="text-align:left;">
+Max. :5.424
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>kable(summary(mtcars[7:11]), row.names = FALSE, align = rep('l', 5), caption = &quot;Control Variables (cont)&quot;) %&gt;% kable_styling(position = &quot;left&quot;)</code></pre>
+<table class="table" style>
+<caption>
+Control Variables (cont)
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+qsec
+</th>
+<th style="text-align:left;">
+vs
+</th>
+<th style="text-align:left;">
+am
+</th>
+<th style="text-align:left;">
+gear
+</th>
+<th style="text-align:left;">
+carb
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Min. :14.50
+</td>
+<td style="text-align:left;">
+Min. :0.0000
+</td>
+<td style="text-align:left;">
+Min. :0.0000
+</td>
+<td style="text-align:left;">
+Min. :3.000
+</td>
+<td style="text-align:left;">
+Min. :1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1st Qu.:16.89
+</td>
+<td style="text-align:left;">
+1st Qu.:0.0000
+</td>
+<td style="text-align:left;">
+1st Qu.:0.0000
+</td>
+<td style="text-align:left;">
+1st Qu.:3.000
+</td>
+<td style="text-align:left;">
+1st Qu.:2.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Median :17.71
+</td>
+<td style="text-align:left;">
+Median :0.0000
+</td>
+<td style="text-align:left;">
+Median :0.0000
+</td>
+<td style="text-align:left;">
+Median :4.000
+</td>
+<td style="text-align:left;">
+Median :2.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mean :17.85
+</td>
+<td style="text-align:left;">
+Mean :0.4375
+</td>
+<td style="text-align:left;">
+Mean :0.4062
+</td>
+<td style="text-align:left;">
+Mean :3.688
+</td>
+<td style="text-align:left;">
+Mean :2.812
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3rd Qu.:18.90
+</td>
+<td style="text-align:left;">
+3rd Qu.:1.0000
+</td>
+<td style="text-align:left;">
+3rd Qu.:1.0000
+</td>
+<td style="text-align:left;">
+3rd Qu.:4.000
+</td>
+<td style="text-align:left;">
+3rd Qu.:4.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Max. :22.90
+</td>
+<td style="text-align:left;">
+Max. :1.0000
+</td>
+<td style="text-align:left;">
+Max. :1.0000
+</td>
+<td style="text-align:left;">
+Max. :5.000
+</td>
+<td style="text-align:left;">
+Max. :8.000
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<pre class="r"><code>dim(mtcars)</code></pre>
-<pre><code>## [1] 32 11</code></pre>
-<pre class="r"><code># tabulate delivery method and dosage level values
-#table(ToothGrowth$supp, ToothGrowth$dose)
+<div id="prepare-the-data" class="section level2">
+<h2>Prepare the Data</h2>
+<p>Prepare the dataset by converting all necessary categorical variables that will be used in this analysis to factors.</p>
+<pre class="r"><code># convert categorical variables to factors
+mtcars$am.label &lt;- factor(mtcars$am, labels = c(&quot;Automatic&quot;, &quot;Manual&quot;))
+mtcars$cyl &lt;- factor(mtcars$cyl)
+mtcars$disp &lt;- factor(mtcars$disp)
+mtcars$hp &lt;- factor(mtcars$hp)
+mtcars$gear &lt;- factor(mtcars$gear)
+mtcars$carb &lt;- factor(mtcars$carb)
 
-# summary of tooth length data grouped by delivery method and dosage level
-#by(data = ToothGrowth$len, INDICES = list(ToothGrowth$supp, ToothGrowth$dose), summary)</code></pre>
+# display the internal structure of variables
+str(mtcars)</code></pre>
+<pre><code>## 'data.frame':    32 obs. of  12 variables:
+##  $ mpg     : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+##  $ cyl     : Factor w/ 3 levels &quot;4&quot;,&quot;6&quot;,&quot;8&quot;: 2 2 1 2 3 2 3 1 1 2 ...
+##  $ disp    : Factor w/ 27 levels &quot;71.1&quot;,&quot;75.7&quot;,..: 13 13 6 16 23 15 23 12 10 14 ...
+##  $ hp      : Factor w/ 22 levels &quot;52&quot;,&quot;62&quot;,&quot;65&quot;,..: 11 11 6 11 15 9 20 2 7 13 ...
+##  $ drat    : num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
+##  $ wt      : num  2.62 2.88 2.32 3.21 3.44 ...
+##  $ qsec    : num  16.5 17 18.6 19.4 17 ...
+##  $ vs      : num  0 0 1 1 0 1 0 1 1 1 ...
+##  $ am      : num  1 1 1 0 0 0 0 0 0 0 ...
+##  $ gear    : Factor w/ 3 levels &quot;3&quot;,&quot;4&quot;,&quot;5&quot;: 2 2 2 1 1 1 1 2 2 2 ...
+##  $ carb    : Factor w/ 6 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 4 4 1 1 2 1 4 2 2 4 ...
+##  $ am.label: Factor w/ 2 levels &quot;Automatic&quot;,&quot;Manual&quot;: 2 2 2 1 1 1 1 1 1 1 ...</code></pre>
 </div>
 <div id="exploratory-data-analysis" class="section level2">
 <h2>Exploratory Data Analysis</h2>
@@ -2981,6 +3308,15 @@ data(mtcars)</code></pre>
 </ol>
 <div id="relation-1" class="section level3">
 <h3>Relation 1</h3>
+<pre class="r"><code># summary of fuel consumption data grouped by transmission type (0 = automatic, 1 = manual)
+by(data = mtcars$mpg, INDICES = list(mtcars$am), summary)</code></pre>
+<pre><code>## : 0
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   10.40   14.95   17.30   17.15   19.20   24.40 
+## -------------------------------------------------------- 
+## : 1
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   15.00   21.00   22.80   24.39   30.40   33.90</code></pre>
 <p><strong>Observation</strong></p>
 <p><em>Pending</em></p>
 </div>
@@ -3001,6 +3337,12 @@ data(mtcars)</code></pre>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>
 <p><em>Pending</em></p>
+</div>
+<div id="appendix" class="section level2">
+<h2>Appendix</h2>
+<div id="figure-1" class="section level3">
+<h3>Figure 1</h3>
+</div>
 </div>
 
 
