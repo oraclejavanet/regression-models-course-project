@@ -141,8 +141,7 @@ kable(summary(mtcars[7:11]), row.names = FALSE, align = rep('l', 5), caption = "
 
 ## Prepare the Data
 
-Prepare the dataset by converting all necessary categorical variables that will
-be used in this analysis to factors.
+Prepare the dataset by converting all necessary numeric variables to factors.
 
 ```{r prepare-data, echo = TRUE}
 # convert categorical variables to factors
@@ -150,6 +149,11 @@ mtcars$am.label <- factor(mtcars$am, labels = c("Automatic", "Manual"))
 mtcars$cyl <- factor(mtcars$cyl)
 mtcars$disp <- factor(mtcars$disp)
 mtcars$hp <- factor(mtcars$hp)
+mtcars$drat <- factor(mtcars$drat)
+mtcars$wt <- factor(mtcars$wt)
+mtcars$qsec <- factor(mtcars$qsec)
+mtcars$vs <- factor(mtcars$vs)
+mtcars$am <- factor(mtcars$am)
 mtcars$gear <- factor(mtcars$gear)
 mtcars$carb <- factor(mtcars$carb)
 
@@ -170,6 +174,14 @@ explore the following relations:
 ```{r relation-1, echo = TRUE}
 # summary of fuel consumption data grouped by transmission type (0 = automatic, 1 = manual)
 by(data = mtcars$mpg, INDICES = list(mtcars$am), summary)
+
+# PENDING:
+g <- ggplot(mtcars, aes(x = am, y = mpg, fill = am)) + geom_boxplot()
+g <- g + ggtitle("Impact of transmission mode on car efficiency")
+g <- g + scale_x_discrete(labels = c("Automatic", "Manual"))
+g <- g + scale_fill_discrete(name = "Transmission", labels = c("Automatic", "Manual"))
+g <- g + theme(plot.title = element_text(color = "red", size = 14, face = "bold"))
+g
 ```
 
 **Observation**
