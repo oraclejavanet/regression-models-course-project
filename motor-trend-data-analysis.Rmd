@@ -32,7 +32,7 @@ Peer-graded Assignment
 
     <a href="https://github.com/oraclejavanet/regression-models-course-project" target="_top">Motor Trend Data Analysis</a>
 
-## Synopsis
+## Executive Summary
 
 This analysis is being performed for Motor Trend, a popular American automobile
 magazine, to evaluate the relationship between transmission type (manual or 
