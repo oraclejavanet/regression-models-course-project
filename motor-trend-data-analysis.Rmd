@@ -163,7 +163,7 @@ str(mtcars)
 
 ## Exploratory Data Analysis
 
-Perform some basic exploratory data analyses of the data. The analyses will
+Perform some basic exploratory data analysis of the data. The analysis will
 explore the relationship between transmission type (manual or automatic) and
 automobile fuel consumption in miles per gallon (MPG).
 
@@ -218,7 +218,16 @@ print(g)
 
 **Observation**
 
-*Pending*
+This basic exploratory data analysis allows us to answer the initial question
+on whether an automatic or manual transmission is better for fuel consumption
+(MPG) in automobiles. The calculated mean for both transmission types and the
+provided boxplot show a significant increase in better fuel consumption for
+automobiles with a manual transmission versus automatic.
+
+This analysis will extend beyond our initial interest in the relationship
+between the two parameters (transmission type and fuel consumption) to
+to include other possible variables that explain variance in fuel consumption
+(MPG). This will be performed in the remaining sections.
 
 ## Inferential Statistics
 
@@ -243,30 +252,20 @@ confidence interval does not contain zero. This indicates strong evidence
 against the null hypothesis so the null hypothesis can be rejected.
 
 Assuming that the transmission data has a normal distribution, we can infer
-that the difference between the mean fuel consumption (MPG) of automatic and 
-manual transmission are significantly different where the estimated difference
+that the difference between mean fuel consumption (MPG) of automatic and 
+manual transmission is significantly different where the estimated difference
 favors manual transmissions automobiles by
-`r round(t1$estimate[2] - t1$estimate[1], 4)` MPG.
+**`r round(t1$estimate[2] - t1$estimate[1], 4)` MPG**.
 
 ## Linear Models
 
-
 *Pending*
-
 
 ## Analysis of Residuals
 
-
 *Pending*
-
 
 ## Conclusion
 
-
 *Pending*
-
-## Appendix
-
-### Figure 1
-
 
