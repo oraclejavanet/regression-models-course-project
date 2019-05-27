@@ -47,7 +47,7 @@ following two questions:
 * Is an automatic or manual transmission better for MPG
 * Quantify the MPG difference between automatic and manual transmissions
 
-The analysis will be conducted using using exploratory data analyses and
+The analysis will be conducted using exploratory data analyses and
 linear regression models using the `mtcars` dataset.
 
 ## Data Description
@@ -164,40 +164,89 @@ str(mtcars)
 ## Exploratory Data Analysis
 
 Perform some basic exploratory data analyses of the data. The analyses will
-explore the following relations:
+explore the relationship between transmission type (manual or automatic) and
+automobile fuel consumption in miles per gallon (MPG).
 
-1. Relation 1
-1. Relation 2
+### Calculate Relative Mean
 
-### Relation 1
+Display the relative mean of automobile fuel consumption data grouped by
+transmission type.
 
-```{r relation-1, echo = TRUE}
-# summary of fuel consumption data grouped by transmission type (0 = automatic, 1 = manual)
-by(data = mtcars$mpg, INDICES = list(mtcars$am), summary)
+```{r exploratory-data-analysis-relative-mean, echo = TRUE}
+by(data = mtcars$mpg, INDICES = list(mtcars$am.label), summary)
+```
 
-# PENDING:
-g <- ggplot(mtcars, aes(x = am, y = mpg, fill = am)) + geom_boxplot()
-g <- g + ggtitle("Impact of transmission mode on car efficiency")
-g <- g + scale_x_discrete(labels = c("Automatic", "Manual"))
-g <- g + scale_fill_discrete(name = "Transmission", labels = c("Automatic", "Manual"))
-g <- g + theme(plot.title = element_text(color = "red", size = 14, face = "bold"))
-g
+### Plot Impact of Transmission Type on Fuel Consumption
+
+Plot the relationship of automobile fuel consumption as a function of
+transmission type.
+
+```{r exploratory-data-analysis-mpg-on-trans-type, echo = TRUE}
+g <- ggplot(data = mtcars, aes(x = am.label, y = mpg, fill = am.label))
+g <- g + geom_boxplot()
+g <- g + scale_colour_discrete(name = "Transmission Type")
+g <- g + scale_fill_discrete(name = "Transmission Type")
+g <- g + xlab("")
+g <- g + ylab("Fuel Consumption (MPG)")
+g <- g + theme(plot.title = element_text(size = 14,
+                                         hjust = 0.5,
+                                         vjust = 0.5,
+                                         margin = margin(t = 0,
+                                                         r = 0,
+                                                         b = 12,
+                                                         l = 0,
+                                                         unit = "pt")),
+           axis.text.x = element_text(angle = 0,
+                                      hjust = 0.5,
+                                      vjust = 0.5,
+                                      margin = margin(t = 0,
+                                                      r = 0,
+                                                      b = 10,
+                                                      l = 0,
+                                                      unit = "pt")),
+           axis.text.y = element_text(angle = 0,
+                                      hjust = 0.5,
+                                      vjust = 0.5,
+                                      margin = margin(t = 0,
+                                                      r = 0,
+                                                      b = 0,
+                                                      l = 10,
+                                                      unit = "pt")))
+g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
+print(g)
 ```
 
 **Observation**
 
 *Pending*
 
-### Relation 2
+## Inferential Statistics
 
-```{r relation-2, echo = TRUE}
+Hypothesis testing will be conducted to study the impact of transmission type on
+automobile fuel consumption. A t-test will be performed on the null
+hypothesis that transmission type has no effect on automobile fuel consumption.
+
+```{r inferential-statistics-test-1, echo = TRUE}
+t1 <- t.test(mpg ~ am, data = mtcars, conf.level = 0.95)
+paste0("p-value = ", round(t1$p.value, 4))
+paste0("confidence interval = (",
+       round(t1$conf.int[1], 4),
+       ", ",
+       round(t1$conf.int[2], 4), ")")
+t1$estimate
 ```
 
 **Observation**
 
-*Pending*
+The observed p-value `r round(t1$p.value, 4)` is less than 0.05 and the 95%
+confidence interval does not contain zero. This indicates strong evidence
+against the null hypothesis so the null hypothesis can be rejected.
 
-
+Assuming that the transmission data has a normal distribution, we can infer
+that the difference between the mean fuel consumption (MPG) of automatic and 
+manual transmission are significantly different where the estimated difference
+favors manual transmissions automobiles by
+`r round(t1$estimate[2] - t1$estimate[1], 4)` MPG.
 
 ## Linear Models
 
