@@ -181,37 +181,49 @@ by(data = mtcars$mpg, INDICES = list(mtcars$am.label), summary)
 Plot the relationship of automobile fuel consumption as a function of
 transmission type.
 
-```{r exploratory-data-analysis-mpg-on-trans-type, echo = TRUE}
+```{r exploratory-data-analysis-mpg-on-trans-type-bp, echo = TRUE}
 g <- ggplot(data = mtcars, aes(x = am.label, y = mpg, fill = am.label))
 g <- g + geom_boxplot()
 g <- g + scale_colour_discrete(name = "Transmission Type")
 g <- g + scale_fill_discrete(name = "Transmission Type")
-g <- g + xlab("")
+g <- g + xlab("Transmission Type")
 g <- g + ylab("Fuel Consumption (MPG)")
 g <- g + theme(plot.title = element_text(size = 14,
                                          hjust = 0.5,
                                          vjust = 0.5,
-                                         margin = margin(t = 0,
-                                                         r = 0,
-                                                         b = 12,
-                                                         l = 0,
-                                                         unit = "pt")),
+                                         margin = margin(b = 12, unit = "pt")),
            axis.text.x = element_text(angle = 0,
                                       hjust = 0.5,
                                       vjust = 0.5,
-                                      margin = margin(t = 0,
-                                                      r = 0,
-                                                      b = 10,
-                                                      l = 0,
-                                                      unit = "pt")),
+                                      margin = margin(b = 10, unit = "pt")),
            axis.text.y = element_text(angle = 0,
                                       hjust = 0.5,
                                       vjust = 0.5,
-                                      margin = margin(t = 0,
-                                                      r = 0,
-                                                      b = 0,
-                                                      l = 10,
-                                                      unit = "pt")))
+                                      margin = margin(l = 10, unit = "pt")))
+g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
+print(g)
+```
+
+```{r exploratory-data-analysis-mpg-on-trans-type-hist, echo = TRUE}
+g <- ggplot(data = mtcars, aes(x = mpg, y = ..count..))
+g <- g + geom_histogram(binwidth = 0.75, aes(fill = am.label))
+g <- g + facet_grid(. ~ am.label)
+g <- g + scale_colour_discrete(name = "Transmission Type")
+g <- g + scale_fill_discrete(name = "Transmission Type")
+g <- g + xlab("Fuel Consumption (MPG)")
+g <- g + ylab("Frequency")
+g <- g + theme(plot.title = element_text(size = 14,
+                                         hjust = 0.5,
+                                         vjust = 0.5,
+                                         margin = margin(b = 12, unit = "pt")),
+           axis.text.x = element_text(angle = 0,
+                                      hjust = 0.5,
+                                      vjust = 0.5,
+                                      margin = margin(b = 10, unit = "pt")),
+           axis.text.y = element_text(angle = 0,
+                                      hjust = 0.5,
+                                      vjust = 0.5,
+                                      margin = margin(l = 10, unit = "pt")))
 g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
 print(g)
 ```
@@ -258,6 +270,21 @@ favors manual transmissions automobiles by
 **`r round(t1$estimate[2] - t1$estimate[1], 4)` MPG**.
 
 ## Linear Models
+
+Perform tests to 
+
+This analysis will extend beyond our initial interest in the relationship
+between the two parameters (transmission type and fuel consumption) to
+to include other possible variables that explain variance in fuel consumption
+(MPG). This will be performed in the remaining sections.
+
+
+### Simple Linear Regression Model
+
+
+
+Here we try to build a linear model between the outcome mpg and the predictor am.
+
 
 *Pending*
 
