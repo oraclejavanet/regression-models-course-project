@@ -71,8 +71,6 @@ variables:
 * `gear` Number of forward gears
 * `carb` Number of carburetors
 
-## Environment Setup
-
 ```{r setup, include = FALSE}
 # set knitr options
 knitr::opts_chunk$set(echo = TRUE, fig.path = 'figures/')
@@ -87,9 +85,7 @@ gc()
 options(scipen = 1)
 ```
 
-Load packages used in this analysis.
-
-```{r load-packages, echo = TRUE}
+```{r load-packages, message = FALSE, echo = FALSE}
 if (!require(knitr)) {
     install.packages("knitr")
     library(knitr)
@@ -102,16 +98,10 @@ if (!require(ggplot2)) {
     install.packages("ggplot2")
     library(ggplot2)
 }
-if (!require("dplyr")) {
+if (!require(dplyr)) {
     install.packages("dplyr")
-    library("dplyr")
+    library(dplyr)
 }
-```
-
-Display session information.
-
-```{r display-session-info, echo = TRUE}
-sessionInfo()
 ```
 
 ## Load Data
@@ -132,11 +122,20 @@ Provide a basic summary of the data.
 
 ```{r basic-data-summary, echo = TRUE}
 # target variable
-kable(summary(mtcars[1]), row.names = FALSE, align = c("l"), caption = "Target Variable (MPG)") %>% kable_styling(position = "center")
+kable(summary(mtcars[1]),
+              row.names = FALSE,
+              align = c("l"),
+              caption = "Target Variable (MPG)") %>% kable_styling(position = "center")
 
 # independent control variables
-kable(summary(mtcars[2:6]), row.names = FALSE, align = c(rep("l", 5)), caption = "Control Variables") %>% kable_styling(position = "left")
-kable(summary(mtcars[7:11]), row.names = FALSE, align = rep('l', 5), caption = "Control Variables (cont)") %>% kable_styling(position = "left")
+kable(summary(mtcars[2:6]),
+              row.names = FALSE,
+              align = c(rep("l", 5)),
+              caption = "Control Variables") %>% kable_styling(position = "left")
+kable(summary(mtcars[7:11]),
+              row.names = FALSE,
+              align = rep('l', 5),
+              caption = "Control Variables (cont)") %>% kable_styling(position = "left")
 ```
 
 ## Prepare the Data
@@ -181,6 +180,8 @@ by(data = mtcars$mpg, INDICES = list(mtcars$am.label), summary)
 Plot the relationship of automobile fuel consumption as a function of
 transmission type.
 
+**Boxplot**
+
 ```{r exploratory-data-analysis-mpg-on-trans-type-bp, echo = TRUE}
 g <- ggplot(data = mtcars, aes(x = am.label, y = mpg, fill = am.label))
 g <- g + geom_boxplot()
@@ -203,6 +204,8 @@ g <- g + theme(plot.title = element_text(size = 14,
 g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
 print(g)
 ```
+
+**Histogram**
 
 ```{r exploratory-data-analysis-mpg-on-trans-type-hist, echo = TRUE}
 g <- ggplot(data = mtcars, aes(x = mpg, y = ..count..))
@@ -237,9 +240,9 @@ provided boxplot show a significant increase in better fuel consumption for
 automobiles with a manual transmission versus automatic.
 
 This analysis will extend beyond our initial interest in the relationship
-between the two parameters (transmission type and fuel consumption) to
-to include other possible variables that explain variance in fuel consumption
-(MPG). This will be performed in the remaining sections.
+between the two parameters (transmission type and fuel consumption) to include
+other possible variables that explain variance in fuel consumption (MPG).
+This will be performed in the remaining sections.
 
 ## Inferential Statistics
 
@@ -274,10 +277,9 @@ favors manual transmissions automobiles by
 Perform tests to 
 
 This analysis will extend beyond our initial interest in the relationship
-between the two parameters (transmission type and fuel consumption) to
-to include other possible variables that explain variance in fuel consumption
-(MPG). This will be performed in the remaining sections.
-
+between the two parameters (transmission type and fuel consumption) to include
+other possible variables that explain variance in fuel consumption (MPG). This
+will be performed in the remaining sections.
 
 ### Simple Linear Regression Model
 
@@ -295,4 +297,15 @@ Here we try to build a linear model between the outcome mpg and the predictor am
 ## Conclusion
 
 *Pending*
+
+## Appendix
+
+### Plot Impact of Transmission Type on Fuel Consumption
+
+
+### Figure 2
+
+
+
+
 
