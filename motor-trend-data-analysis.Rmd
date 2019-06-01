@@ -71,6 +71,8 @@ variables:
 * `gear` Number of forward gears
 * `carb` Number of carburetors
 
+## Environment Setup
+
 ```{r setup, include = FALSE}
 # set knitr options
 knitr::opts_chunk$set(echo = TRUE, fig.path = 'figures/')
@@ -85,7 +87,7 @@ gc()
 options(scipen = 1)
 ```
 
-```{r load-packages, message = FALSE, echo = FALSE}
+```{r load-packages, message = FALSE, echo = TRUE}
 if (!require(knitr)) {
     install.packages("knitr")
     library(knitr)
@@ -98,10 +100,6 @@ if (!require(ggplot2)) {
     install.packages("ggplot2")
     library(ggplot2)
 }
-if (!require(dplyr)) {
-    install.packages("dplyr")
-    library(dplyr)
-}
 ```
 
 ## Load Data
@@ -111,31 +109,6 @@ Load the mtcars dataset.
 ```{r load-data, echo = TRUE}
 library(datasets)
 data(mtcars)
-```
-
-## Basic Data Summary
-
-The mtcars dataset includes 1 target variable (mpg) and 10 independent control
-variables with 32 observations.
-
-Provide a basic summary of the data.
-
-```{r basic-data-summary, echo = TRUE}
-# target variable
-kable(summary(mtcars[1]),
-              row.names = FALSE,
-              align = c("l"),
-              caption = "Target Variable (MPG)") %>% kable_styling(position = "center")
-
-# independent control variables
-kable(summary(mtcars[2:6]),
-              row.names = FALSE,
-              align = c(rep("l", 5)),
-              caption = "Control Variables") %>% kable_styling(position = "left")
-kable(summary(mtcars[7:11]),
-              row.names = FALSE,
-              align = rep('l', 5),
-              caption = "Control Variables (cont)") %>% kable_styling(position = "left")
 ```
 
 ## Prepare the Data
@@ -175,61 +148,7 @@ transmission type.
 by(data = mtcars$mpg, INDICES = list(mtcars$am.label), summary)
 ```
 
-### Plot Impact of Transmission Type on Fuel Consumption
-
-Plot the relationship of automobile fuel consumption as a function of
-transmission type.
-
-**Boxplot**
-
-```{r exploratory-data-analysis-mpg-on-trans-type-bp, echo = TRUE}
-g <- ggplot(data = mtcars, aes(x = am.label, y = mpg, fill = am.label))
-g <- g + geom_boxplot()
-g <- g + scale_colour_discrete(name = "Transmission Type")
-g <- g + scale_fill_discrete(name = "Transmission Type")
-g <- g + xlab("Transmission Type")
-g <- g + ylab("Fuel Consumption (MPG)")
-g <- g + theme(plot.title = element_text(size = 14,
-                                         hjust = 0.5,
-                                         vjust = 0.5,
-                                         margin = margin(b = 12, unit = "pt")),
-           axis.text.x = element_text(angle = 0,
-                                      hjust = 0.5,
-                                      vjust = 0.5,
-                                      margin = margin(b = 10, unit = "pt")),
-           axis.text.y = element_text(angle = 0,
-                                      hjust = 0.5,
-                                      vjust = 0.5,
-                                      margin = margin(l = 10, unit = "pt")))
-g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
-print(g)
-```
-
-**Histogram**
-
-```{r exploratory-data-analysis-mpg-on-trans-type-hist, echo = TRUE}
-g <- ggplot(data = mtcars, aes(x = mpg, y = ..count..))
-g <- g + geom_histogram(binwidth = 0.75, aes(fill = am.label))
-g <- g + facet_grid(. ~ am.label)
-g <- g + scale_colour_discrete(name = "Transmission Type")
-g <- g + scale_fill_discrete(name = "Transmission Type")
-g <- g + xlab("Fuel Consumption (MPG)")
-g <- g + ylab("Frequency")
-g <- g + theme(plot.title = element_text(size = 14,
-                                         hjust = 0.5,
-                                         vjust = 0.5,
-                                         margin = margin(b = 12, unit = "pt")),
-           axis.text.x = element_text(angle = 0,
-                                      hjust = 0.5,
-                                      vjust = 0.5,
-                                      margin = margin(b = 10, unit = "pt")),
-           axis.text.y = element_text(angle = 0,
-                                      hjust = 0.5,
-                                      vjust = 0.5,
-                                      margin = margin(l = 10, unit = "pt")))
-g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
-print(g)
-```
+See [A.1 Plot Impact of Transmission Type on Fuel Consumption](#a.1-plot-impact-of-transmission-type-on-fuel-consumption).
 
 **Observation**
 
@@ -300,10 +219,66 @@ Here we try to build a linear model between the outcome mpg and the predictor am
 
 ## Appendix
 
-### Plot Impact of Transmission Type on Fuel Consumption
+### A.1 Plot Impact of Transmission Type on Fuel Consumption
+
+Plot the relationship of automobile fuel consumption as a function of
+transmission type.
+
+**Boxplot**
+
+```{r exploratory-data-analysis-mpg-on-trans-type-bp, echo = TRUE}
+g <- ggplot(data = mtcars, aes(x = am.label, y = mpg, fill = am.label))
+g <- g + geom_boxplot()
+g <- g + scale_colour_discrete(name = "Transmission Type")
+g <- g + scale_fill_discrete(name = "Transmission Type")
+g <- g + xlab("Transmission Type")
+g <- g + ylab("Fuel Consumption (MPG)")
+g <- g + theme(plot.title = element_text(size = 14,
+                                         hjust = 0.5,
+                                         vjust = 0.5,
+                                         margin = margin(b = 12, unit = "pt")),
+           axis.text.x = element_text(angle = 0,
+                                      hjust = 0.5,
+                                      vjust = 0.5,
+                                      margin = margin(b = 10, unit = "pt")),
+           axis.text.y = element_text(angle = 0,
+                                      hjust = 0.5,
+                                      vjust = 0.5,
+                                      margin = margin(l = 10, unit = "pt")))
+g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
+print(g)
+```
+
+**Histogram**
+
+```{r exploratory-data-analysis-mpg-on-trans-type-hist, echo = TRUE}
+g <- ggplot(data = mtcars, aes(x = mpg, y = ..count..))
+g <- g + geom_histogram(binwidth = 0.75, aes(fill = am.label))
+g <- g + facet_grid(. ~ am.label)
+g <- g + scale_colour_discrete(name = "Transmission Type")
+g <- g + scale_fill_discrete(name = "Transmission Type")
+g <- g + xlab("Fuel Consumption (MPG)")
+g <- g + ylab("Frequency")
+g <- g + theme(plot.title = element_text(size = 14,
+                                         hjust = 0.5,
+                                         vjust = 0.5,
+                                         margin = margin(b = 12, unit = "pt")),
+           axis.text.x = element_text(angle = 0,
+                                      hjust = 0.5,
+                                      vjust = 0.5,
+                                      margin = margin(b = 10, unit = "pt")),
+           axis.text.y = element_text(angle = 0,
+                                      hjust = 0.5,
+                                      vjust = 0.5,
+                                      margin = margin(l = 10, unit = "pt")))
+g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
+print(g)
+```
+
+### A.2 Plot Impact of Transmission Type on Fuel Consumption
 
 
-### Figure 2
+### A.3 Figure 2
 
 
 
