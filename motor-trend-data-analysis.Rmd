@@ -46,8 +46,8 @@ following two questions:
 * Is an automatic or manual transmission better for MPG
 * Quantify the MPG difference between automatic and manual transmissions
 
-The analysis will be conducted using exploratory data analyses and
-linear regression models using the `mtcars` dataset.
+The analysis will be conducted using exploratory and inferential data
+analyses and linear regression models using the `mtcars` dataset.
 
 ## Data Description
 
@@ -162,8 +162,7 @@ transmission type.
 
 ```{r exploratory-data-analysis-relative-mean, echo = TRUE}
 by(data = mtcars$mpg,
-   INDICES = list(factor(mtcars$am, labels = c("Automatic", "Manual"))),
-   summary)
+   INDICES = list(factor(mtcars$am, labels = c("Automatic", "Manual"))), summary)
 ```
 
 ### Impact of Transmission Type on Fuel Consumption
@@ -176,10 +175,10 @@ automobiles.
 ### Inferential Statistics
 
 Hypothesis testing will be conducted to study the impact of transmission type on
-automobile fuel consumption. A t-test will be performed on the null
+fuel consumption in automobiles. A t-test will be performed on the null
 hypothesis that transmission type has no effect on automobile fuel consumption.
 
-```{r inferential-statistics-test-1, echo = TRUE}
+```{r inferential-statistics-test-1, echo = TRUE, results = 'hold'}
 t1 <- t.test(mpg ~ am, data = mtcars, conf.level = 0.95)
 paste0("p-value = ", round(t1$p.value, 4))
 paste0("confidence interval = (",
@@ -280,7 +279,28 @@ fuel consumption.
 
 ## Analysis of Residuals
 
-*Pending*
+See [A.6 Residuals Plot](#a.6-residuals-plot) in the Appendix section to find
+the residuals plots for the multiple linear regression model (best model fit).
+
+Overall, the fit of the multiple linear regression model and its residuals
+appear to support the prerequisites for a linear model and adequately explain
+the variance in fuel consumption.
+
+The points in the *Residuals vs. Fitted* plot appear to be random which shows
+the data are independent. The plot also reveals potential outliers for the
+Chrysler Imperial, Fiat 128, and Toyota Corolla. The adjusted $R^2$ may be
+improved by removing those data values and studying them independently.
+
+The points of the *Normal Q-Q* plot closely follow the line which show that the
+residuals are normally distributed.
+
+The points on the *Scale-Location* plot appear to be spread equally along the
+horizontal line with equally (randomly) spread points allowing us to conclude
+equal variance (homoscedasticity).
+
+The *Residuals vs. Leverage* plot doesn't show any influential cases as all of
+the cases are within the the dashed Cook's distance line. All points are within
+the 0.05 lines which conclude there are no outliers.
 
 ## Conclusion
 
@@ -304,9 +324,9 @@ This analysis concludes the following:
     manual transmission.
     
     However, when the variables weight (wt) and 1/4 mile time (qsec) were added
-    to the best fitted multiple regression model, the advantage of the
-    manual transmission decreased to
-    `r round(coefficients(bestModelFit)[Intercept = "am"], 2)`.
+    to the best fitted multiple regression model, the advantage of a manual
+    transmission decreased to
+    `r round(coefficients(bestModelFit)[Intercept = "am"], 2)` MPG.
     
 ## Appendix
 
@@ -414,5 +434,21 @@ ggcorr(data = mtcars,
 ```{r stepwise-regression-appendix, echo = TRUE, results = 'hold'}
 initialModel <- lm(mpg ~ ., data = mtcars)
 stepReg <- stepAIC(initialModel, direction="both")
+```
+
+### A.5 Model Coefficients
+
+```{r model-coefficients, echo = TRUE}
+coefficients(singleModelFit)
+coefficients(bestModelFit)
+```
+
+### A.6 Residuals Plot
+
+Residuals for the multiple linear regression model (best model fit).
+
+```{r analysis-of-residuals-plot, echo = TRUE, message = FALSE, results = 'hold'}
+par(mfrow = c(1, 1))
+plot(bestModelFit)
 ```
 
