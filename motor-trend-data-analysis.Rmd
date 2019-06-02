@@ -115,11 +115,11 @@ data(mtcars)
 str(mtcars)
 ```
 
-## Exploratory Data Analysis
+## Data Analysis
 
-Perform some basic exploratory data analysis of the data to study the
-relationship between transmission type (manual or automatic) and automobile fuel
-consumption in miles per gallon (MPG).
+Perform some basic exploratory and inferential data analysis of the data to
+study the relationship between transmission type (manual or automatic) and
+automobile fuel consumption in miles per gallon (MPG).
 
 ### Basic Data Summary
 
@@ -147,15 +147,7 @@ by(data = mtcars$mpg,
 plot the relationship between transmission type and fuel consumption in
 automobiles.
 
-### Observation
-
-This basic exploratory data analysis allows us to answer the initial question
-on whether an automatic or manual transmission is better for fuel consumption
-(MPG) in automobiles. The calculated mean for both transmission types and the
-provided plots show a significant increase in better fuel consumption for
-automobiles with a manual transmission versus automatic.
-
-## Inferential Statistics
+### Inferential Statistics
 
 Hypothesis testing will be conducted to study the impact of transmission type on
 automobile fuel consumption. A t-test will be performed on the null
@@ -175,46 +167,58 @@ The observed p-value `r round(t1$p.value, 4)` is less than 0.05 and the 95%
 confidence interval does not contain zero. This indicates strong evidence
 against the null hypothesis so the null hypothesis can be rejected.
 
+### Observation
+
+The calculated mean for both transmission types and the
+[provided plots](#a.2-plot-impact-of-transmission-type-on-fuel-consumption)
+show a
+significant increase in better fuel consumption for automobiles with a manual
+transmission versus automatic.
+
 The difference between mean fuel consumption of automatic and manual
 transmission is significantly different where the estimated difference favors
-manual transmissions automobiles by
-`r round(t1$estimate[2] - t1$estimate[1], 4)` MPG.
+a manual transmission by
+`r round(t1$estimate[2] - t1$estimate[1], 2)` MPG.
 
 ## Linear Models
 
-Perform tests to 
+Linear regression analysis will be used to extend beyond our initial interest
+in the relationship between the transmission type variable only and fuel
+consumption. Other possible variables in the mtcars dataset may better explain
+variance in fuel consumption.
 
+### Simple Linear Regression Model
 
+Based on our initial interest with only transmission type, start by building a
+simple linear regression model between the response variable (MPG) and the
+single regressor (transmission type).
 
-This analysis will extend beyond our initial interest in the relationship
-between the two parameters (transmission type and fuel consumption) to include
-other possible variables that explain variance in fuel consumption (MPG). This
-will be performed in the remaining sections.
+```{r linear-models, echo = TRUE}
+singleModelFit <- lm(mpg ~ factor(am), data = mtcars)
+summary(singleModelFit)
+```
 
+Here we see that the adjusted $R^2$ is only 0.3385 which suggests that this
+model can only explain 33.8% of the variance in fuel consumption (approximately
+one third) based on transmission type alone.
 
-This analysis will extend beyond our initial interest in the relationship
-between the two parameters (transmission type and fuel consumption) to include
-other possible variables that explain variance in fuel consumption (MPG).
-This will be performed in the remaining sections.
-
-
-### Correlation Table
+Looking to the correlation table below, it's possible that other variables in
+the dataset can better explain the outcome:
 
 ```{r correlation-table, echo = TRUE}
 round(cor(mtcars, method = "pearson")[1,], 2)
 ```
 
+Also see [A.3 Correlation Matrix Plot](#a.3-correlation-matrix-plot) in the
+Appendix section which provides a plot showing the correlation coefficients
+between all variables.
+
+### Multivariate Linear Regression Model
+
+is around 0.338. That means that this first model can only explain 33.8% of the data. So there may be other variables which could give a better understanding of the outcome. We know that adding more variables increases the R2 coefficient. So we expect a higher value of this coefficient by adding more predictors into the model.
 
 
-
-### Simple Linear Regression Model
-
-
-
-Here we try to build a linear model between the outcome mpg and the predictor am.
-
-
-*Pending*
+fullModelFit
 
 ## Analysis of Residuals
 
@@ -224,22 +228,36 @@ Here we try to build a linear model between the outcome mpg and the predictor am
 
 This analysis concludes the following:
 
-1. Automobiles with a manual transmission yield better gas mileage than vehicles
-   with an automatic transmission. An automobile with a manual transmission
-   will achieve `r round(t1$estimate[1])` MPG on average compared to
-   `r round(t1$estimate[2])` MPG for an automatic
-   transmission giving us a mean difference of
-   `r round(t1$estimate[2] - t1$estimate[1])` MPG favoring a manual
-   transmission.
+1. **Is an automatic or manual transmission better for MPG?**
 
-1. Further analysis was performed beyond our initial interest in the
-   relationship between the two parameters (transmission type and fuel
-   consumption) to include other possible variables that explain variance in
-   fuel consumption. This analysis showed the following correlation:
-   
-   a. C1
-   b. C2
-   c. C3
+    Automobiles with a manual transmission yield better gas mileage than
+    vehicles with an automatic transmission. However, 
+    
+    ... when modeled with confounding variables like displacement, HP and
+    weight, the difference is not as significant as it seems in the beginning:
+    a big part of the difference is explained by other variables.
+    
+    ... other variables such as
+    the number of cylinders, displacement, gross horsepower and weight are more
+    statistically significant when determining fuel consumption.
+
+1. **Quantify the MPG difference between automatic and manual transmissions.**
+
+    An automobile with a manual transmission
+    will achieve `r round(t1$estimate[1], 2)` MPG on average compared to
+    `r round(t1$estimate[2], 2)` MPG for an automatic
+    transmission giving us a mean difference of
+    `r round(t1$estimate[2] - t1$estimate[1], 2)` MPG favoring a manual
+    transmission.
+
+---
+Analysis shows that when only transmission was used in the model manual cars have an mpg increase of 7.245. However, when variables wt and hp are included, the manual car advantage drops to 2.084 with other variables contributing, sometimes more (e.g. weight) to the effect.
+---
+the MPG difference between manual and automatic transmissions is
+
+7.245 MPG - for the simple linear regression model (mpg ~ am)
+
+2.936 MPG - for the best fitted multiple regression model (mpg ~ wt + qsec + am)
 
 ## Appendix
 
@@ -277,8 +295,9 @@ transmission type.
 #### Figure A.2.1 (Boxplot)
 
 ```{r mpg-on-trans-type-bp, echo = TRUE}
-g <- ggplot(data = mtcars, aes(x = factor(am, labels = c("Automatic", "Manual")),
-                               y = mpg, fill = factor(am, labels = c("Automatic", "Manual"))))
+g <- ggplot(data = mtcars,
+            aes(x = factor(am, labels = c("Automatic", "Manual")),
+                y = mpg, fill = factor(am, labels = c("Automatic", "Manual"))))
 g <- g + geom_boxplot()
 g <- g + scale_colour_discrete(name = "Transmission Type")
 g <- g + scale_fill_discrete(name = "Transmission Type")
@@ -304,7 +323,8 @@ print(g)
 
 ```{r mpg-on-trans-type-hist, echo = TRUE}
 g <- ggplot(data = mtcars, aes(x = mpg, y = ..count..))
-g <- g + geom_histogram(binwidth = 0.75, aes(fill = factor(am, labels = c("Automatic", "Manual"))))
+g <- g + geom_histogram(binwidth = 0.75,
+                        aes(fill = factor(am, labels = c("Automatic", "Manual"))))
 g <- g + facet_grid(. ~ factor(am, labels = c("Automatic", "Manual")))
 g <- g + scale_colour_discrete(name = "Transmission Type")
 g <- g + scale_fill_discrete(name = "Transmission Type")
@@ -328,6 +348,8 @@ print(g)
 
 ### A.3 Correlation Matrix Plot
 
+Show the correlation coefficients for all variables.
+
 ```{r correlation-matrix, echo = TRUE}
 ggcorr(data = mtcars,
        method = c("pairwise", "pearson"),
@@ -337,10 +359,3 @@ ggcorr(data = mtcars,
        label_size=5,
        label_color='white')
 ```
-
-
-
-
-
-
-
