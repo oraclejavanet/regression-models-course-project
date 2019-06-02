@@ -100,6 +100,10 @@ if (!require(ggplot2)) {
     install.packages("ggplot2")
     library(ggplot2)
 }
+if (!require(GGally)) {
+    install.packages("GGally")
+    library(GGally)
+}
 ```
 
 ## Load Data
@@ -118,16 +122,16 @@ Prepare the dataset by converting all necessary numeric variables to factors.
 ```{r prepare-data, echo = TRUE}
 # convert categorical variables to factors
 mtcars$am.label <- factor(mtcars$am, labels = c("Automatic", "Manual"))
-mtcars$cyl <- factor(mtcars$cyl)
-mtcars$disp <- factor(mtcars$disp)
-mtcars$hp <- factor(mtcars$hp)
-mtcars$drat <- factor(mtcars$drat)
-mtcars$wt <- factor(mtcars$wt)
-mtcars$qsec <- factor(mtcars$qsec)
-mtcars$vs <- factor(mtcars$vs)
-mtcars$am <- factor(mtcars$am)
-mtcars$gear <- factor(mtcars$gear)
-mtcars$carb <- factor(mtcars$carb)
+#mtcars$cyl <- factor(mtcars$cyl)
+#mtcars$disp <- factor(mtcars$disp)
+#mtcars$hp <- factor(mtcars$hp)
+#mtcars$drat <- factor(mtcars$drat)
+#mtcars$wt <- factor(mtcars$wt)
+#mtcars$qsec <- factor(mtcars$qsec)
+#mtcars$vs <- factor(mtcars$vs)
+#mtcars$am <- factor(mtcars$am)
+#mtcars$gear <- factor(mtcars$gear)
+#mtcars$carb <- factor(mtcars$carb)
 
 # display the internal structure of variables
 str(mtcars)
@@ -280,7 +284,8 @@ print(g)
 
 ### A.3 Figure 2
 
-
-
+```{r figure-2, echo = TRUE}
+ggcorr(mtcars, nbreaks=8, palette='RdGy', label=TRUE, label_size=5, label_color='white')
+```
 
 
