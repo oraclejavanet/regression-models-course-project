@@ -72,20 +72,6 @@ variables:
 
 ## Environment Setup
 
-```{r setup, include = FALSE}
-# set knitr options
-knitr::opts_chunk$set(echo = TRUE, fig.path = 'figures/')
-
-# clear global workspace (including hidden objects) for this session
-rm(list = ls(all.names = TRUE))
-
-# free up memory and display statistics on free memory
-gc()
-
-# disable scientific notation for numbers
-options(scipen = 1)
-```
-
 ```{r load-packages, message = FALSE, echo = TRUE}
 if (!require(knitr)) {
     install.packages("knitr")
@@ -103,6 +89,46 @@ if (!require(GGally)) {
     install.packages("GGally")
     library(GGally)
 }
+if (!require(MASS)) {
+    install.packages("MASS")
+    library(MASS)
+}
+```
+
+```{r setup, include = FALSE}
+# set knitr options
+knitr::opts_chunk$set(echo = TRUE, fig.path = 'figures/')
+
+# clear global workspace (including hidden objects) for this session
+rm(list = ls(all.names = TRUE))
+
+# free up memory and display statistics on free memory
+gc()
+
+# disable scientific notation for numbers
+options(scipen = 1)
+
+# knit hook to allow partial output from a code chunk
+hook_output <- knit_hooks$get("output")
+knit_hooks$set(output = function(x, options) {
+  lines <- options$output.lines
+  if (is.null(lines)) {
+    return(hook_output(x, options)) # pass to default hook
+  }
+  x <- unlist(strsplit(x, "\n"))
+  more <- "..."
+  if (length(lines) == 1) { # first n lines
+    if (length(x) > lines) {
+      # truncate the output, but add ....
+      x <- c(head(x, lines), more)
+    }
+  } else {
+    x <- c(more, x[lines], more)
+  }
+  # paste these lines together
+  x <- paste(c(x, ""), collapse = "\n")
+  hook_output(x, options)
+})
 ```
 
 ## Load Data
@@ -191,10 +217,10 @@ variance in fuel consumption.
 
 Based on our initial interest with only transmission type, start by building a
 simple linear regression model between the response variable (MPG) and the
-single regressor (transmission type).
+single predictor (transmission type).
 
-```{r linear-models, echo = TRUE}
-singleModelFit <- lm(mpg ~ factor(am), data = mtcars)
+```{r simple-linear-regression-model, echo = TRUE}
+singleModelFit <- lm(mpg ~ am, data = mtcars)
 summary(singleModelFit)
 ```
 
@@ -213,12 +239,44 @@ Also see [A.3 Correlation Matrix Plot](#a.3-correlation-matrix-plot) in the
 Appendix section which provides a plot showing the correlation coefficients
 between all variables.
 
-### Multivariate Linear Regression Model
+### Multiple Linear Regression Model
 
-is around 0.338. That means that this first model can only explain 33.8% of the data. So there may be other variables which could give a better understanding of the outcome. We know that adding more variables increases the R2 coefficient. So we expect a higher value of this coefficient by adding more predictors into the model.
+Perform stepwise regression using the `stepAIC()` function from the `MASS`
+package to find the subset of variables which result in the best model fit (a
+model that lowers prediction error). 
 
+Start by building an initial model with all variables as predictors. Stepwise
+regression will select the significant predictors for the final model which is
+the best model. The AIC algorithm runs `lm` multiple times to build multiple
+regression models and selects the best variables from them using both forward
+selection and backward elimination methods.
 
-fullModelFit
+```{r stepwise-regression-code, echo = TRUE, results = "hide"}
+initialModel <- lm(mpg ~ ., data = mtcars)
+stepReg <- stepAIC(initialModel, direction = "both")
+```
+
+See [A.4 Stepwise Regression](#a.4-stepwise-regression) for stepwise regression
+output.
+
+Show results of stepwise regression variable selection.
+
+```{r stepwise-regression-results, echo = TRUE, output.lines=1:8}
+print(stepReg$anova)
+```
+
+As shown above, the best model obtained from the stepwise regression procedure
+consists of the predictors weight (wt) and 1/4 mile time (qsec) in addition to
+transmission type (am).
+
+```{r best-model-fit, echo = TRUE}
+bestModelFit <- lm(mpg ~ wt + qsec + am, data = mtcars)
+summary(bestModelFit)
+```
+
+Here we observe that the adjusted $R^2$ is now 0.8336 which suggests that the
+new model (including the three predictors) can explain 84% of the variance in
+fuel consumption.
 
 ## Analysis of Residuals
 
@@ -231,34 +289,25 @@ This analysis concludes the following:
 1. **Is an automatic or manual transmission better for MPG?**
 
     Automobiles with a manual transmission yield better gas mileage than
-    vehicles with an automatic transmission. However, 
-    
-    ... when modeled with confounding variables like displacement, HP and
-    weight, the difference is not as significant as it seems in the beginning:
-    a big part of the difference is explained by other variables.
-    
-    ... other variables such as
-    the number of cylinders, displacement, gross horsepower and weight are more
-    statistically significant when determining fuel consumption.
+    vehicles with an automatic transmission. However, determining fuel
+    consumption based on transmission type alone showed that the relationship
+    was not as statistically significant as first thought. Models were built
+    with confounding variables such as weight (wt) and 1/4 mile time (qsec)
+    in addition to transmission type (am) that better explain variance in fuel
+    consumption.
 
 1. **Quantify the MPG difference between automatic and manual transmissions.**
 
-    An automobile with a manual transmission
-    will achieve `r round(t1$estimate[1], 2)` MPG on average compared to
-    `r round(t1$estimate[2], 2)` MPG for an automatic
-    transmission giving us a mean difference of
-    `r round(t1$estimate[2] - t1$estimate[1], 2)` MPG favoring a manual
-    transmission.
-
----
-Analysis shows that when only transmission was used in the model manual cars have an mpg increase of 7.245. However, when variables wt and hp are included, the manual car advantage drops to 2.084 with other variables contributing, sometimes more (e.g. weight) to the effect.
----
-the MPG difference between manual and automatic transmissions is
-
-7.245 MPG - for the simple linear regression model (mpg ~ am)
-
-2.936 MPG - for the best fitted multiple regression model (mpg ~ wt + qsec + am)
-
+    Based on our simple linear regression model that only considered
+    transmission type, the mean difference in fuel consumption increased to
+    `r round(coefficients(singleModelFit)[Intercept = "am"], 2)` MPG favoring a
+    manual transmission.
+    
+    However, when the variables weight (wt) and 1/4 mile time (qsec) were added
+    to the best fitted multiple regression model, the advantage of the
+    manual transmission decreased to
+    `r round(coefficients(bestModelFit)[Intercept = "am"], 2)`.
+    
 ## Appendix
 
 ### A.1 Basic Data Summary
@@ -359,3 +408,11 @@ ggcorr(data = mtcars,
        label_size=5,
        label_color='white')
 ```
+
+### A.4 Stepwise Regression
+
+```{r stepwise-regression-appendix, echo = TRUE, results = 'hold'}
+initialModel <- lm(mpg ~ ., data = mtcars)
+stepReg <- stepAIC(initialModel, direction="both")
+```
+
