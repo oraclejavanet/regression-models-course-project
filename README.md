@@ -2,7 +2,7 @@
 
 **Jeffrey M. Hunter**
 
-May 27, 2019
+June 1, 2019
 
 ## Project
 
@@ -10,7 +10,7 @@ Peer-graded Assignment: Course Project
 
 **Analysis report available on RPubs**
 
-* <a href="http://rpubs.com/OracleJavaNet/498067">Motor Trend Data Analysis</a>
+* <a href="http://rpubs.com/OracleJavaNet/501375">Motor Trend Data Analysis</a>
 
 **Analysis report available on GitHub**
 
