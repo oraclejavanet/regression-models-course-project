@@ -15,6 +15,7 @@ data/
 packrat/lib*/
 .Rproj.user
 rsconnect/
+motor-trend-data-analysis.log
 
 # +--------------------------------------------------+
 # | R                                                |
