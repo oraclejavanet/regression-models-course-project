@@ -38,8 +38,7 @@ This analysis is being performed for Motor Trend, a popular American automobile
 magazine, to evaluate the relationship between transmission type (manual or 
 automatic) and fuel consumption in miles per gallon (MPG) in automobiles. The
 analysis extends beyond transmission type to also include other possible
-variables such as number of cylinders, displacement and gross horsepower that
-explain variance in fuel consumption (MPG).
+variables that explain variance in fuel consumption (MPG).
 
 As part of this analysis, Motor Trend is particularly interested in the
 following two questions:
@@ -108,58 +107,57 @@ if (!require(GGally)) {
 
 ## Load Data
 
-Load the mtcars dataset.
+Load the mtcars dataset and display the internal structure of the variables.
 
 ```{r load-data, echo = TRUE}
 library(datasets)
 data(mtcars)
-```
-
-## Prepare the Data
-
-Prepare the dataset by converting all necessary numeric variables to factors.
-
-```{r prepare-data, echo = TRUE}
-# convert categorical variables to factors
-mtcars$am.label <- factor(mtcars$am, labels = c("Automatic", "Manual"))
-#mtcars$cyl <- factor(mtcars$cyl)
-#mtcars$disp <- factor(mtcars$disp)
-#mtcars$hp <- factor(mtcars$hp)
-#mtcars$drat <- factor(mtcars$drat)
-#mtcars$wt <- factor(mtcars$wt)
-#mtcars$qsec <- factor(mtcars$qsec)
-#mtcars$vs <- factor(mtcars$vs)
-#mtcars$am <- factor(mtcars$am)
-#mtcars$gear <- factor(mtcars$gear)
-#mtcars$carb <- factor(mtcars$carb)
-
-# display the internal structure of variables
 str(mtcars)
 ```
 
 ## Exploratory Data Analysis
 
-Perform some basic exploratory data analysis of the data. The analysis will
-explore the relationship between transmission type (manual or automatic) and
-automobile fuel consumption in miles per gallon (MPG).
+Perform some basic exploratory data analysis of the data to study the
+relationship between transmission type (manual or automatic) and automobile fuel
+consumption in miles per gallon (MPG).
 
-### Calculate Relative Mean
+### Basic Data Summary
+
+The mtcars dataset includes 1 target variable (mpg) and 10 independent control
+variables with 32 observations.
+
+See [A.1 Basic Data Summary](#a.1-basic-data-summary) in the Appendix section
+which shows the range and quartiles for each variable.
+
+### Relative Mean
 
 Display the relative mean of automobile fuel consumption data grouped by
 transmission type.
 
 ```{r exploratory-data-analysis-relative-mean, echo = TRUE}
-by(data = mtcars$mpg, INDICES = list(mtcars$am.label), summary)
+by(data = mtcars$mpg,
+   INDICES = list(factor(mtcars$am, labels = c("Automatic", "Manual"))),
+   summary)
 ```
 
-See [A.1 Plot Impact of Transmission Type on Fuel Consumption](#a.1-plot-impact-of-transmission-type-on-fuel-consumption).
+### Impact of Transmission Type on Fuel Consumption
 
-**Observation**
+[Figure A.2.1 (Boxplot)](#figure-a.2.1-boxplot) and
+[Figure A.2.2 (Histogram)](#figure-a.2.2-histogram) in the Appendix section
+plot the relationship between transmission type and automobile fuel consumption.
+
+### Correlation Table
+
+```{r correlation-table, echo = TRUE}
+round(cor(mtcars, method = "pearson")[1,], 2)
+```
+
+### Observation
 
 This basic exploratory data analysis allows us to answer the initial question
 on whether an automatic or manual transmission is better for fuel consumption
 (MPG) in automobiles. The calculated mean for both transmission types and the
-provided boxplot show a significant increase in better fuel consumption for
+provided plots show a significant increase in better fuel consumption for
 automobiles with a manual transmission versus automatic.
 
 This analysis will extend beyond our initial interest in the relationship
@@ -219,19 +217,61 @@ Here we try to build a linear model between the outcome mpg and the predictor am
 
 ## Conclusion
 
-*Pending*
+This analysis concludes the following:
+
+1. Automobiles with a manual transmission yield better gas mileage than vehicles
+   with an automatic transmission. An automobile with a manual transmission
+   will achieve 17.1 MPG on average compared to 24.4 MPG for an automatic
+   transmission giving us a mean difference of 7.2 MPG favoring a manual
+   transmission.
+
+1. Further analysis was performed beyond our initial interest in the
+   relationship between the two parameters (transmission type and fuel
+   consumption) to include other possible variables that explain variance in
+   fuel consumption. This analysis showed the following correlation:
+   
+   a. C1
+   b. C2
+   c. C3
 
 ## Appendix
 
-### A.1 Plot Impact of Transmission Type on Fuel Consumption
+### A.1 Basic Data Summary
+
+Provide a basic summary of the data.
+
+```{r appendix-basic-data-summary, echo = TRUE, results = 'hold'}
+# target variable
+kable(summary(mtcars[1]),
+              row.names = FALSE,
+              align = c("l"),
+              caption = "Target Variable (MPG)") %>%
+                kable_styling(position = "center")
+
+# independent control variables
+kable(summary(mtcars[2:6]),
+              row.names = FALSE,
+              align = c(rep("l", 5)),
+              caption = "Control Variables") %>%
+                kable_styling(position = "left")
+
+kable(summary(mtcars[7:11]),
+              row.names = FALSE,
+              align = rep('l', 5),
+              caption = "Control Variables (cont)") %>%
+                kable_styling(position = "left")
+```
+
+### A.2 Plot Impact of Transmission Type on Fuel Consumption
 
 Plot the relationship of automobile fuel consumption as a function of
 transmission type.
 
-**Boxplot**
+#### Figure A.2.1 (Boxplot)
 
 ```{r exploratory-data-analysis-mpg-on-trans-type-bp, echo = TRUE}
-g <- ggplot(data = mtcars, aes(x = am.label, y = mpg, fill = am.label))
+g <- ggplot(data = mtcars, aes(x = factor(am, labels = c("Automatic", "Manual")),
+                               y = mpg, fill = factor(am, labels = c("Automatic", "Manual"))))
 g <- g + geom_boxplot()
 g <- g + scale_colour_discrete(name = "Transmission Type")
 g <- g + scale_fill_discrete(name = "Transmission Type")
@@ -253,12 +293,12 @@ g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
 print(g)
 ```
 
-**Histogram**
+#### Figure A.2.2 (Histogram)
 
 ```{r exploratory-data-analysis-mpg-on-trans-type-hist, echo = TRUE}
 g <- ggplot(data = mtcars, aes(x = mpg, y = ..count..))
-g <- g + geom_histogram(binwidth = 0.75, aes(fill = am.label))
-g <- g + facet_grid(. ~ am.label)
+g <- g + geom_histogram(binwidth = 0.75, aes(fill = factor(am, labels = c("Automatic", "Manual"))))
+g <- g + facet_grid(. ~ factor(am, labels = c("Automatic", "Manual")))
 g <- g + scale_colour_discrete(name = "Transmission Type")
 g <- g + scale_fill_discrete(name = "Transmission Type")
 g <- g + xlab("Fuel Consumption (MPG)")
@@ -279,13 +319,21 @@ g <- g + ggtitle("Impact of Transmission Type on Fuel Consumption")
 print(g)
 ```
 
-### A.2 Plot Impact of Transmission Type on Fuel Consumption
-
-
 ### A.3 Figure 2
 
 ```{r figure-2, echo = TRUE}
-ggcorr(mtcars, nbreaks=8, palette='RdGy', label=TRUE, label_size=5, label_color='white')
+ggcorr(data = mtcars,
+       method = c("pairwise", "pearson"),
+       nbreaks=8,
+       palette='RdGy',
+       label=TRUE,
+       label_size=5,
+       label_color='white')
 ```
+
+
+
+
+
 
 
