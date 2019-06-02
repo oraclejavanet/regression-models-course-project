@@ -2912,9 +2912,9 @@ str(mtcars)</code></pre>
 ##  $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
 ##  $ carb: num  4 4 1 1 2 1 4 2 2 4 ...</code></pre>
 </div>
-<div id="exploratory-data-analysis" class="section level2">
-<h2>Exploratory Data Analysis</h2>
-<p>Perform some basic exploratory data analysis of the data to study the relationship between transmission type (manual or automatic) and automobile fuel consumption in miles per gallon (MPG).</p>
+<div id="data-analysis" class="section level2">
+<h2>Data Analysis</h2>
+<p>Perform some basic exploratory and inferential data analysis of the data to study the relationship between transmission type (manual or automatic) and automobile fuel consumption in miles per gallon (MPG).</p>
 <div id="basic-data-summary" class="section level3">
 <h3>Basic Data Summary</h3>
 <p>The mtcars dataset includes 1 target variable (mpg) and 10 independent control variables with 32 observations.</p>
@@ -2938,13 +2938,8 @@ str(mtcars)</code></pre>
 <h3>Impact of Transmission Type on Fuel Consumption</h3>
 <p><a href="#figure-a.2.1-boxplot">Figure A.2.1 (Boxplot)</a> and <a href="#figure-a.2.2-histogram">Figure A.2.2 (Histogram)</a> in the Appendix section plot the relationship between transmission type and fuel consumption in automobiles.</p>
 </div>
-<div id="observation" class="section level3">
-<h3>Observation</h3>
-<p>This basic exploratory data analysis allows us to answer the initial question on whether an automatic or manual transmission is better for fuel consumption (MPG) in automobiles. The calculated mean for both transmission types and the provided plots show a significant increase in better fuel consumption for automobiles with a manual transmission versus automatic.</p>
-</div>
-</div>
-<div id="inferential-statistics" class="section level2">
-<h2>Inferential Statistics</h2>
+<div id="inferential-statistics" class="section level3">
+<h3>Inferential Statistics</h3>
 <p>Hypothesis testing will be conducted to study the impact of transmission type on automobile fuel consumption. A t-test will be performed on the null hypothesis that transmission type has no effect on automobile fuel consumption.</p>
 <pre class="r"><code>t1 &lt;- t.test(mpg ~ am, data = mtcars, conf.level = 0.95)
 paste0(&quot;p-value = &quot;, round(t1$p.value, 4))</code></pre>
@@ -2958,23 +2953,50 @@ paste0(&quot;p-value = &quot;, round(t1$p.value, 4))</code></pre>
 <pre><code>## mean in group 0 mean in group 1 
 ##        17.14737        24.39231</code></pre>
 <p>The observed p-value 0.0014 is less than 0.05 and the 95% confidence interval does not contain zero. This indicates strong evidence against the null hypothesis so the null hypothesis can be rejected.</p>
-<p>The difference between mean fuel consumption of automatic and manual transmission is significantly different where the estimated difference favors manual transmissions automobiles by 7.2449 MPG.</p>
+</div>
+<div id="observation" class="section level3">
+<h3>Observation</h3>
+<p>The calculated mean for both transmission types and the <a href="#a.2-plot-impact-of-transmission-type-on-fuel-consumption">provided plots</a> show a significant increase in better fuel consumption for automobiles with a manual transmission versus automatic.</p>
+<p>The difference between mean fuel consumption of automatic and manual transmission is significantly different where the estimated difference favors a manual transmission by 7.24 MPG.</p>
+</div>
 </div>
 <div id="linear-models" class="section level2">
 <h2>Linear Models</h2>
-<p>Perform tests to</p>
-<p>This analysis will extend beyond our initial interest in the relationship between the two parameters (transmission type and fuel consumption) to include other possible variables that explain variance in fuel consumption (MPG). This will be performed in the remaining sections.</p>
-<p>This analysis will extend beyond our initial interest in the relationship between the two parameters (transmission type and fuel consumption) to include other possible variables that explain variance in fuel consumption (MPG). This will be performed in the remaining sections.</p>
-<div id="correlation-table" class="section level3">
-<h3>Correlation Table</h3>
+<p>Linear regression analysis will be used to extend beyond our initial interest in the relationship between the transmission type variable only and fuel consumption. Other possible variables in the mtcars dataset may better explain variance in fuel consumption.</p>
+<div id="simple-linear-regression-model" class="section level3">
+<h3>Simple Linear Regression Model</h3>
+<p>Based on our initial interest with only transmission type, start by building a simple linear regression model between the response variable (MPG) and the single regressor (transmission type).</p>
+<pre class="r"><code>singleModelFit &lt;- lm(mpg ~ factor(am), data = mtcars)
+summary(singleModelFit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ factor(am), data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -9.3923 -3.0923 -0.2974  3.2439  9.5077 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   17.147      1.125  15.247 1.13e-15 ***
+## factor(am)1    7.245      1.764   4.106 0.000285 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.902 on 30 degrees of freedom
+## Multiple R-squared:  0.3598, Adjusted R-squared:  0.3385 
+## F-statistic: 16.86 on 1 and 30 DF,  p-value: 0.000285</code></pre>
+<p>Here we see that the adjusted <span class="math inline">\(R^2\)</span> is only 0.3385 which suggests that this model can only explain 33.8% of the variance in fuel consumption (approximately one third) based on transmission type alone.</p>
+<p>Looking to the correlation table below, it’s possible that other variables in the dataset can better explain the outcome:</p>
 <pre class="r"><code>round(cor(mtcars, method = &quot;pearson&quot;)[1,], 2)</code></pre>
 <pre><code>##   mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb 
 ##  1.00 -0.85 -0.85 -0.78  0.68 -0.87  0.42  0.66  0.60  0.48 -0.55</code></pre>
+<p>Also see <a href="#a.3-correlation-matrix-plot">A.3 Correlation Matrix Plot</a> in the Appendix section which provides a plot showing the correlation coefficients between all variables.</p>
 </div>
-<div id="simple-linear-regression-model" class="section level3">
-<h3>Simple Linear Regression Model</h3>
-<p>Here we try to build a linear model between the outcome mpg and the predictor am.</p>
-<p><em>Pending</em></p>
+<div id="multivariate-linear-regression-model" class="section level3">
+<h3>Multivariate Linear Regression Model</h3>
+<p>is around 0.338. That means that this first model can only explain 33.8% of the data. So there may be other variables which could give a better understanding of the outcome. We know that adding more variables increases the R2 coefficient. So we expect a higher value of this coefficient by adding more predictors into the model.</p>
+<p>fullModelFit</p>
 </div>
 </div>
 <div id="analysis-of-residuals" class="section level2">
@@ -2985,14 +3007,16 @@ paste0(&quot;p-value = &quot;, round(t1$p.value, 4))</code></pre>
 <h2>Conclusion</h2>
 <p>This analysis concludes the following:</p>
 <ol style="list-style-type: decimal">
-<li><p>Automobiles with a manual transmission yield better gas mileage than vehicles with an automatic transmission. An automobile with a manual transmission will achieve 17 MPG on average compared to 24 MPG for an automatic transmission giving us a mean difference of 7 MPG favoring a manual transmission.</p></li>
-<li><p>Further analysis was performed beyond our initial interest in the relationship between the two parameters (transmission type and fuel consumption) to include other possible variables that explain variance in fuel consumption. This analysis showed the following correlation:</p>
-<ol style="list-style-type: lower-alpha">
-<li>C1</li>
-<li>C2</li>
-<li>C3</li>
-</ol></li>
+<li><p><strong>Is an automatic or manual transmission better for MPG?</strong></p>
+<p>Automobiles with a manual transmission yield better gas mileage than vehicles with an automatic transmission. However,</p>
+<p>… when modeled with confounding variables like displacement, HP and weight, the difference is not as significant as it seems in the beginning: a big part of the difference is explained by other variables.</p>
+<p>… other variables such as the number of cylinders, displacement, gross horsepower and weight are more statistically significant when determining fuel consumption.</p></li>
+<li><p><strong>Quantify the MPG difference between automatic and manual transmissions.</strong></p>
+<p>An automobile with a manual transmission will achieve 17.15 MPG on average compared to 24.39 MPG for an automatic transmission giving us a mean difference of 7.24 MPG favoring a manual transmission.</p></li>
 </ol>
+<p>the MPG difference between manual and automatic transmissions is</p>
+<p>7.245 MPG - for the simple linear regression model (mpg ~ am)</p>
+<p>2.936 MPG - for the best fitted multiple regression model (mpg ~ wt + qsec + am)</p>
 </div>
 <div id="appendix" class="section level2">
 <h2>Appendix</h2>
@@ -3324,8 +3348,9 @@ Max. :8.000
 <p>Plot the relationship of automobile fuel consumption as a function of transmission type.</p>
 <div id="figure-a.2.1-boxplot" class="section level4">
 <h4>Figure A.2.1 (Boxplot)</h4>
-<pre class="r"><code>g &lt;- ggplot(data = mtcars, aes(x = factor(am, labels = c(&quot;Automatic&quot;, &quot;Manual&quot;)),
-                               y = mpg, fill = factor(am, labels = c(&quot;Automatic&quot;, &quot;Manual&quot;))))
+<pre class="r"><code>g &lt;- ggplot(data = mtcars,
+            aes(x = factor(am, labels = c(&quot;Automatic&quot;, &quot;Manual&quot;)),
+                y = mpg, fill = factor(am, labels = c(&quot;Automatic&quot;, &quot;Manual&quot;))))
 g &lt;- g + geom_boxplot()
 g &lt;- g + scale_colour_discrete(name = &quot;Transmission Type&quot;)
 g &lt;- g + scale_fill_discrete(name = &quot;Transmission Type&quot;)
@@ -3350,7 +3375,8 @@ print(g)</code></pre>
 <div id="figure-a.2.2-histogram" class="section level4">
 <h4>Figure A.2.2 (Histogram)</h4>
 <pre class="r"><code>g &lt;- ggplot(data = mtcars, aes(x = mpg, y = ..count..))
-g &lt;- g + geom_histogram(binwidth = 0.75, aes(fill = factor(am, labels = c(&quot;Automatic&quot;, &quot;Manual&quot;))))
+g &lt;- g + geom_histogram(binwidth = 0.75,
+                        aes(fill = factor(am, labels = c(&quot;Automatic&quot;, &quot;Manual&quot;))))
 g &lt;- g + facet_grid(. ~ factor(am, labels = c(&quot;Automatic&quot;, &quot;Manual&quot;)))
 g &lt;- g + scale_colour_discrete(name = &quot;Transmission Type&quot;)
 g &lt;- g + scale_fill_discrete(name = &quot;Transmission Type&quot;)
@@ -3375,6 +3401,7 @@ print(g)</code></pre>
 </div>
 <div id="a.3-correlation-matrix-plot" class="section level3">
 <h3>A.3 Correlation Matrix Plot</h3>
+<p>Show the correlation coefficients for all variables.</p>
 <pre class="r"><code>ggcorr(data = mtcars,
        method = c(&quot;pairwise&quot;, &quot;pearson&quot;),
        nbreaks=8,
